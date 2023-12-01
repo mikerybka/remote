@@ -1,20 +1,17 @@
 package remote
 
 import (
-	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/mikerybka/util"
 )
 
-func WriteJSONFile(user, host, target string, v any) error {
-	path := filepath.Join(os.TempDir(), "remote", util.RandomID())
-	err := util.WriteJSONFile(path, v)
+func WriteJSONFile(user, host, dst string, v any) error {
+	src := filepath.Join(os.TempDir(), "remote", util.RandomID())
+	err := util.WriteJSONFile(src, v)
 	if err != nil {
 		return err
 	}
-	cmd := exec.Command("scp", path, fmt.Sprintf("%s@%s:%s", user, host, target))
-	return util.Run(cmd)
+	return Copy(user, host, dst, src)
 }
